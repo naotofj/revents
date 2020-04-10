@@ -62,12 +62,6 @@ class EventDashboard extends Component {
     selectedEvent: null,
   };
 
-  // handleIsOpenToogle = () => {
-  // 	this.setState(({ isOpen }) => ({
-  // 		isOpen: !isOpen
-  // 	}));
-  // };
-
   handleCreateFormOpen = () => {
     this.setState({
       isOpen: true,
@@ -113,7 +107,7 @@ class EventDashboard extends Component {
 
   handleDeleteEvent = (id) => {
     this.setState(({ events }) => ({
-      events: events.filter((e) => e.id !== id),
+      events: events.filter((event) => event.id !== id),
     }));
   };
 
