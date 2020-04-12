@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import { Segment, Item, Icon, List, Button } from "semantic-ui-react";
-import EventListAttendee from "./EventListAttendee";
-import { Link } from "react-router-dom";
+import React, { Component } from 'react';
+import { Segment, Item, Icon, List, Button } from 'semantic-ui-react';
+import EventListAttendee from './EventListAttendee';
+import { Link } from 'react-router-dom';
 
 class EventListItem extends Component {
   render() {
@@ -35,6 +35,8 @@ class EventListItem extends Component {
         </Segment>
         <Segment clearing>
           <span>{event.description}</span>
+        </Segment>
+        <Segment clearing>
           <Button
             onClick={() => deleteEvent(event.id)}
             as='a'
