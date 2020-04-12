@@ -16,8 +16,8 @@ let render = () => {
   ReactDOM.render(
     <Provider store={store}>
       <BrowserRouter>
-        <ScrollToTop/>
-          <App />
+        <ScrollToTop />
+        <App />
       </BrowserRouter>
     </Provider>,
     rootEl
