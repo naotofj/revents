@@ -10,18 +10,14 @@ import UserDetailedPage from '../../features/user/UserDetailed/UserDetailedPage'
 import SettingsDashboard from '../../features/user/settings/SettingsDashboard';
 import EventForm from '../../features/event/EventForm/EventForm';
 import TestComponent from '../../features/testArea/TestComponent';
+import ModalManager from '../../features/modals/ModalManager';
 
 class App extends Component {
-componentWillMount() {
-  const API_KEY = process.env.REACT_APP_GOOGLEMAPS_API_KEY; 
-  const script = document.createElement('script'); 
-  script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}`; 
-  document.head.append(script);
-};
 
   render() {
     return (
       <Fragment>
+        <ModalManager />
         <Route exact path='/' component={HomePage} />
         <Route
           path='/(.+)'

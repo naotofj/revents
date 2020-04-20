@@ -15,7 +15,7 @@ const PlaceInput = ({
       value={value}
       onChange={onChange}
       searchOptions={options}
-      onSelect = {onSelect}
+      onSelect={onSelect}
     >
       {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
         <Form.Field>
