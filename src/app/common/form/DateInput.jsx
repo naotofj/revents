@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Label } from 'semantic-ui-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { format } from 'date-fns';
+// import { format } from 'date-fns';
 
 const DateInput = ({
   input,
@@ -12,7 +12,7 @@ const DateInput = ({
   ...rest
 }) => {
   const onChangeHandler = value => {
-    input.value = format(value, rest.dateFormat)
+    input.value = value.toISOString()
     input.onChange(input.value)
   }
   return (
