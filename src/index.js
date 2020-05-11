@@ -9,25 +9,40 @@ import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from 'react-router-dom';
 import { configureStore } from './app/store/configureStore';
 import ScrollToTop from './app/common/util/ScrollToTop';
-import { loadEvents } from './features/event/eventActions';
+import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
+import { createFirestoreInstance } from 'redux-firestore';  
+import firebase from './app/config/firebase';
 
 const rootEl = document.getElementById('root');
 
 const store = configureStore();
-store.dispatch(loadEvents());
+
+const rrfConfig = {
+  userProfile: 'users',
+  useFirestoreForProfile: true,
+};
+
+const rrfProps = {
+  firebase,
+  config: rrfConfig,
+  dispatch: store.dispatch,
+  createFirestoreInstance,
+};
 
 let render = () => {
   ReactDOM.render(
     <Provider store={store}>
-      <BrowserRouter>
-        <ScrollToTop />
-        <ReduxToastr
-          position='bottom-center'
-          transitionIn='fadeIn'
-          transitionOut='fadeOut'
-        />
-        <App />
-      </BrowserRouter>
+      <ReactReduxFirebaseProvider {...rrfProps}>
+        <BrowserRouter>
+          <ScrollToTop />
+          <ReduxToastr
+            position='bottom-center'
+            transitionIn='fadeIn'
+            transitionOut='fadeOut'
+          />
+          <App />
+        </BrowserRouter>
+      </ReactReduxFirebaseProvider>
     </Provider>,
     rootEl
   );
