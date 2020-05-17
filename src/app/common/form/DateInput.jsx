@@ -5,25 +5,27 @@ import 'react-datepicker/dist/react-datepicker.css';
 // import { format } from 'date-fns';
 
 const DateInput = ({
-  input,
+  input: { value, onChange, onBlur },
   width,
   placeholder,
   meta: { touched, error },
   ...rest
 }) => {
-  const onChangeHandler = value => {
-    input.value = value.toISOString()
-    input.onChange(input.value)
-  }
   return (
     <Form.Field error={touched && !!error}>
       <DatePicker
         {...rest}
         placeholderText={placeholder}
-        selected={input.value ? new Date(input.value) : null}
-        onChange={onChangeHandler}
-        onBlur={input.onBlur}
-        onChangeRaw={e => e.preventDefault()} //executed when user type in the field
+        selected={
+          value
+            ? Object.prototype.toString.call(value) !== '[object Date]'
+              ? value.date
+              : value
+            : null
+        }
+        onChange={onChange}
+        onBlur={onBlur}
+        onChangeRaw={(e) => e.preventDefault()} //executed when user type in the field
       />
       {touched && error && (
         <Label basic color='red' pointing>
