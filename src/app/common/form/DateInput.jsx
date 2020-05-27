@@ -19,7 +19,7 @@ const DateInput = ({
         selected={
           value
             ? Object.prototype.toString.call(value) !== '[object Date]'
-              ? value.date
+              ? value.toDate()
               : value
             : null
         }
