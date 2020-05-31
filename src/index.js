@@ -11,18 +11,13 @@ import { configureStore } from './app/store/configureStore';
 import ScrollToTop from './app/common/util/ScrollToTop';
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
 import { createFirestoreInstance } from 'redux-firestore';  
-import firebase from './app/config/firebase';
+import firebase, { rrfConfig } from './app/config/firebase';
 
 const rootEl = document.getElementById('root');
 
 const store = configureStore();
 
-const rrfConfig = {
-  userProfile: 'users',
-  useFirestoreForProfile: true,
-};
-
-const rrfProps = {
+export const rrfProps = {
   firebase,
   config: rrfConfig,
   dispatch: store.dispatch,

@@ -14,6 +14,11 @@ const firebaseConfig = {
   appId: '1:23707004958:web:95ee7ac40636843e17fe0f',
 };
 
+export const rrfConfig = {
+  userProfile: 'users',
+  useFirestoreForProfile: true,
+};
+
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig)
   firebase.firestore();

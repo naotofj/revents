@@ -22,10 +22,10 @@ export const login = (creds) => {
 export const registerUser = (user) => async (
   dispatch,
   getState,
-  { getFirebase }
+  { getFirebase, getFirestore }
 ) => {
   const firebase = getFirebase();
-  const firestore = firebase.firestore();
+  const firestore = getFirestore();
   try {
     let createdUser = await firebase
       .auth()
@@ -36,12 +36,9 @@ export const registerUser = (user) => async (
     });
     let newUser = {
       displayName: user.displayName,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      createdAt: firestore.FieldValue.serverTimestamp(),
     };
-    await firestore
-      .collection('users')
-      .doc(createdUser.user.uid)
-      .set({ ...newUser });
+    await firestore.set(`users/${createdUser.user.uid}`, { ...newUser });
     dispatch(closeModal());
   } catch (error) {
     console.log(error);
@@ -54,10 +51,10 @@ export const registerUser = (user) => async (
 export const socialLogin = (selectedProvider) => async (
   dispatch,
   getState,
-  { getFirebase }
+  { getFirebase, getFirestore }
 ) => {
   const firebase = getFirebase();
-  const firestore = firebase.firestore();
+  const firestore = getFirestore();
   try {
     dispatch(closeModal());
     let user = await firebase.login({
@@ -65,10 +62,10 @@ export const socialLogin = (selectedProvider) => async (
       type: 'popup',
     });
     if (user.additionalUserInfo.isNewUser) {
-      await firestore.collection('users').doc(user.user.uid).set({
+      await firestore.set(`users/${user.user.uid}`, {
         displayName: user.profile.displayName,
         photoURL: user.profile.avatarUrl,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        createdAt: firestore.FieldValue.serverTimestamp(),
       });
     }
   } catch (error) {
@@ -86,7 +83,7 @@ export const updatePassword = (creds) => async (
   try {
     await user.updatePassword(creds.newPassword1);
     await dispatch(reset('account'));
-    toastr.success('Suceess',' Your passowrd has been updated')
+    toastr.success('Suceess', ' Your passowrd has been updated');
   } catch (error) {
     throw new SubmissionError({
       _error: error.message,
