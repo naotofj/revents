@@ -13,7 +13,7 @@ const actions = {
 
 const mapState = (state) => ({
   auth: state.firebase.auth,
-  profile: state.firebase.profile
+  profile: state.firebase.profile,
 });
 
 class NavBar extends Component {
@@ -54,7 +54,11 @@ class NavBar extends Component {
             </Fragment>
           )}{' '}
           {authenticated ? (
-            <SignedInMenu profile={profile} signOut={this.handleSignOut} />
+            <SignedInMenu
+              auth={auth}
+              profile={profile}
+              signOut={this.handleSignOut}
+            />
           ) : (
             <SignedOutMenu
               signIn={this.handleSignIn}
