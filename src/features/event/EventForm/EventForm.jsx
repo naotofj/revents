@@ -10,31 +10,39 @@ import {
   hasLengthGreaterThan,
 } from 'revalidate';
 import { Segment, Form, Button, Grid, Header } from 'semantic-ui-react';
-import { createEvent, updateEvent } from '../eventActions';
-import cuid from 'cuid';
+import { createEvent, updateEvent, cancelToggle } from '../eventActions';
 import TextInput from '../../../app/common/form/TextInput';
 import TextArea from '../../../app/common/form/TextArea';
 import SelectInput from '../../../app/common/form/SelectInput';
 import DateInput from '../../../app/common/form/DateInput';
 import PlaceInput from '../../../app/common/form/PlaceInput';
+import { withFirestore } from 'react-redux-firebase';
 
 const mapState = (state, ownProps) => {
   const eventId = ownProps.match.params.id;
 
   let event = {};
 
-  if (eventId && state.events.length > 0) {
-    event = state.events.filter((event) => event.id === eventId)[0];
+  if (
+    state.firestore.ordered.events &&
+    state.firestore.ordered.events.length > 0
+  ) {
+    event =
+      state.firestore.ordered.events.filter(
+        (event) => event.id === eventId
+      )[0] || {};
   }
 
   return {
     initialValues: event,
+    event,
   };
 };
 
 const actions = {
   createEvent,
   updateEvent,
+  cancelToggle,
 };
 
 const validate = combineValidators({
@@ -66,20 +74,34 @@ class EventForm extends Component {
     venueLatLng: {},
   };
 
-  onFormSubmit = (values) => {
+// setting listeners manually for firestore event
+// can be replaced for the firestoreConnect HOC
+
+  async componentDidMount() {
+    const { firestore, match } = this.props;
+    await firestore.setListener(`events/${match.params.id}`);    
+  }
+
+  async componentWillUnmount() {
+    const { firestore, match } = this.props;
+    await firestore.unsetListener(`events/${match.params.id}`);
+  }
+
+  onFormSubmit = async (values) => {
     values.venueLatLng = this.state.venueLatLng;
-    if (this.props.initialValues.id) {
-      this.props.updateEvent(values);
-      this.props.history.push(`/events/${this.props.initialValues.id}`);
-    } else {
-      const newEvent = {
-        ...values,  
-        id: cuid(),
-        hostPhotoURL: '/assets/user.png',
-        hostedBy: 'Bob',
-      };
-      this.props.createEvent(newEvent);
-      this.props.history.push(`/events/${newEvent.id}`);
+    try {
+      if (this.props.initialValues.id) { // updates event
+        if (Object.keys(values.venueLatLng).length === 0) {
+          values.venueLatLng = this.props.event.venueLatLng
+        }
+        this.props.updateEvent(values);
+        this.props.history.push(`/events/${this.props.initialValues.id}`);
+      } else { // creating event
+        let createdEvent = await this.props.createEvent(values);
+        this.props.history.push(`/events/${createdEvent.id}`);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -116,6 +138,8 @@ class EventForm extends Component {
       invalid,
       submitting,
       pristine,
+      event,
+      cancelToggle,
     } = this.props;
     return (
       <Grid>
@@ -170,7 +194,7 @@ class EventForm extends Component {
                 options={{
                   location: new google.maps.LatLng(this.state.cityLatLng),
                   radius: 1000,
-                  types: ['establishment']
+                  types: ['establishment'],
                 }}
                 onSelect={this.handleVenueSelect}
                 placeholder='Event Venue'
@@ -200,6 +224,13 @@ class EventForm extends Component {
               >
                 Cancel
               </Button>
+              <Button
+                type='button'
+                color={event.cancelled ? 'green' : 'red'}
+                floated='right'
+                content={event.cancelled ? 'Reactive event' : 'Cancel event'}
+                onClick={() => cancelToggle(!event.cancelled, event.id)}
+              ></Button>
             </Form>
           </Segment>
         </Grid.Column>
@@ -208,7 +239,13 @@ class EventForm extends Component {
   }
 }
 
-export default connect(
-  mapState,
-  actions
-)(reduxForm({ form: 'eventForm', validate })(EventForm));
+export default withFirestore(
+  connect(
+    mapState,
+    actions
+  )(
+    reduxForm({ form: 'eventForm', validate, enableReinitialize: true })(
+      EventForm
+    )
+  )
+);

@@ -118,3 +118,12 @@ body {
 .dropzone--isActive {
   border: dashed 3px green;
 }
+
+/* toastrConfirm styles */
+
+#testCSS .rrt-confirm {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(0, -50%);
+}
