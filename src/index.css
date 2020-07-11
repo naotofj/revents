@@ -127,3 +127,7 @@ body {
   top: 50%;
   transform: translate(0, -50%);
 }
+
+.display-linebreak {
+  white-space: pre-line;
+}

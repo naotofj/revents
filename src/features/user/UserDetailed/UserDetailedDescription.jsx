@@ -25,7 +25,7 @@ const UserDetailedDescription = ({ profile }) => {
             <p>
               Member Since: <strong>{createdAt}</strong>
             </p>
-            <p>Description of user</p>
+            <p className="display-linebreak">{profile.about}</p>
           </Grid.Column>
           <Grid.Column width={6}>
             <Header icon='thumbs up outline' content='Interests' />
