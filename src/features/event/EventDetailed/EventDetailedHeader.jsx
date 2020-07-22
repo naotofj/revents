@@ -22,6 +22,7 @@ const EventDetailedHeader = ({
   isGoing,
   goingToEvent,
   cancelGoingToEvent,
+  loading,
 }) => {
   return (
     <Segment.Group>
@@ -47,7 +48,10 @@ const EventDetailedHeader = ({
                 <p>
                   Hosted by{' '}
                   <strong>
-                    <Link to={`/profile/${event.hostUid}`} style={{color: 'white'}}>
+                    <Link
+                      to={`/profile/${event.hostUid}`}
+                      style={{ color: 'white' }}
+                    >
                       {event.hostedBy}
                     </Link>
                   </strong>
@@ -66,7 +70,11 @@ const EventDetailedHeader = ({
                 Cancel My Place
               </Button>
             ) : (
-              <Button onClick={() => goingToEvent(event)} color='teal'>
+              <Button
+                loading={loading}
+                onClick={() => goingToEvent(event)}
+                color='teal'
+              >
                 Join Event
               </Button>
             )}

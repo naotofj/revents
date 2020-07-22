@@ -7,7 +7,10 @@ import EventDetailedChat from './EventDetailedChat';
 import EventDetailedSidebar from './EventDetailedSidebar';
 import { withFirestore, firebaseConnect, isEmpty } from 'react-redux-firebase';
 import { compose } from 'redux';
-import { objectToArray, createDataTree } from '../../../app/common/util/helpers';
+import {
+  objectToArray,
+  createDataTree,
+} from '../../../app/common/util/helpers';
 import { goingToEvent, cancelGoingToEvent } from '../../user/userActions';
 import { addEventComment } from '../eventActions';
 
@@ -32,6 +35,7 @@ const mapState = (state, ownProps) => {
     eventChat:
       !isEmpty(state.firebase.data.event_chat) &&
       objectToArray(state.firebase.data.event_chat[eventId]),
+    loading: state.async.loading,
   };
 };
 
@@ -60,17 +64,19 @@ class EventDetailedPage extends Component {
       cancelGoingToEvent,
       addEventComment,
       eventChat,
+      loading,
     } = this.props;
     const attendees =
       event && event.attendees && objectToArray(event.attendees);
     const isHost = event.hostUid === auth.uid;
     const isGoing = attendees && attendees.some((a) => a.id === auth.uid);
-    const chatTree = !isEmpty(eventChat) && createDataTree(eventChat)
+    const chatTree = !isEmpty(eventChat) && createDataTree(eventChat);
     return (
       <Grid>
         <Grid.Column width={10}>
           <EventDetailedHeader
             event={event}
+            loading={loading}
             isGoing={isGoing}
             isHost={isHost}
             goingToEvent={goingToEvent}

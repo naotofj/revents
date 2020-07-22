@@ -24,7 +24,7 @@ const DateInput = ({
             : null
         }
         onChange={onChange}
-        onBlur={onBlur}
+        onBlur={(e) => e.preventDefault()}
         onChangeRaw={(e) => e.preventDefault()} //executed when user type in the field
       />
       {touched && error && (

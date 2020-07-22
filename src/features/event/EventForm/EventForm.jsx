@@ -36,6 +36,7 @@ const mapState = (state, ownProps) => {
   return {
     initialValues: event,
     event,
+    loading: state.async.loading,
   };
 };
 
@@ -74,12 +75,12 @@ class EventForm extends Component {
     venueLatLng: {},
   };
 
-// setting listeners manually for firestore event
-// can be replaced for the firestoreConnect HOC
+  // setting listeners manually for firestore event
+  // can be replaced for the firestoreConnect HOC
 
   async componentDidMount() {
     const { firestore, match } = this.props;
-    await firestore.setListener(`events/${match.params.id}`);    
+    await firestore.setListener(`events/${match.params.id}`);
   }
 
   async componentWillUnmount() {
@@ -90,13 +91,15 @@ class EventForm extends Component {
   onFormSubmit = async (values) => {
     values.venueLatLng = this.state.venueLatLng;
     try {
-      if (this.props.initialValues.id) { // updates event
+      if (this.props.initialValues.id) {
+        // updates event
         if (Object.keys(values.venueLatLng).length === 0) {
-          values.venueLatLng = this.props.event.venueLatLng
+          values.venueLatLng = this.props.event.venueLatLng;
         }
-        this.props.updateEvent(values);
+        await this.props.updateEvent(values);
         this.props.history.push(`/events/${this.props.initialValues.id}`);
-      } else { // creating event
+      } else {
+        // creating event
         let createdEvent = await this.props.createEvent(values);
         this.props.history.push(`/events/${createdEvent.id}`);
       }
@@ -140,6 +143,7 @@ class EventForm extends Component {
       pristine,
       event,
       cancelToggle,
+      loading,
     } = this.props;
     return (
       <Grid>
@@ -209,6 +213,7 @@ class EventForm extends Component {
               />
               <Button
                 disabled={invalid || submitting || pristine}
+                loading={loading}
                 positive
                 type='submit'
               >
@@ -221,6 +226,7 @@ class EventForm extends Component {
                     : () => history.push('events')
                 }
                 type='button'
+                disabled={loading}
               >
                 Cancel
               </Button>
