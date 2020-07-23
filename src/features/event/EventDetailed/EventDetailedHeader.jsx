@@ -23,6 +23,8 @@ const EventDetailedHeader = ({
   goingToEvent,
   cancelGoingToEvent,
   loading,
+  authenticated,
+  openModal,
 }) => {
   return (
     <Segment.Group>
@@ -65,17 +67,27 @@ const EventDetailedHeader = ({
       <Segment attached='bottom' clearing>
         {!isHost && (
           <Fragment>
-            {isGoing ? (
+            {isGoing && (
               <Button onClick={() => cancelGoingToEvent(event)}>
-                Cancel My Place
+                LEAVE EVENT
               </Button>
-            ) : (
+            )}
+            {!isGoing && authenticated && (
               <Button
                 loading={loading}
                 onClick={() => goingToEvent(event)}
                 color='teal'
               >
-                Join Event
+                JOIN EVENT
+              </Button>
+            )}
+            {!authenticated && (
+              <Button
+                loading={loading}
+                onClick={() => openModal('UnauthModal')}
+                color='teal'
+              >
+                JOIN EVENT
               </Button>
             )}
           </Fragment>

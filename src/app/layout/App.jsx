@@ -14,6 +14,7 @@ import ModalManager from '../../features/modals/ModalManager';
 import LoadingComponent from './LoadingComponent';
 import { useSelector } from 'react-redux';
 import { isLoaded } from 'react-redux-firebase';
+import { UserisAuthenticated } from '../../features/auth/authWrapper';
 
 const AuthIsLoaded = ({ children }) => {
   const auth = useSelector((state) => state.firebase.auth);
@@ -37,13 +38,10 @@ class App extends Component {
                   <Switch key={this.props.location.key}>
                     <Route exact path='/events' component={EventDashboard} />
                     <Route path='/events/:id' component={EventDetailedPage} />
-                    <Route path='/people' component={PeopleDashboard} />
-                    <Route path='/profile/:id' component={UserDetailedPage} />
-                    <Route path='/settings' component={SettingsDashboard} />
-                    <Route
-                      path={['/createEvent', '/manage/:id']}
-                      component={EventForm}
-                    />
+                    <Route path='/people' component={UserisAuthenticated(PeopleDashboard)} />
+                    <Route path='/profile/:id' component={UserisAuthenticated(UserDetailedPage)} />
+                    <Route path='/settings' component={UserisAuthenticated(SettingsDashboard)} />
+                    <Route path={['/createEvent', '/manage/:id']} component={UserisAuthenticated(EventForm)}/>
                     <Route path='/test' component={TestComponent} />
                   </Switch>
                 </Container>
