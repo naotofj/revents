@@ -35,6 +35,7 @@ const mapState = (state) => ({
   profile: state.firebase.profile,
   photos: state.firestore.ordered.photos,
   loading: state.async.loading,
+  buttonName: state.async.elementName,
 });
 
 const PhotosPage = ({
@@ -43,7 +44,8 @@ const PhotosPage = ({
   setMainPhoto,
   photos,
   profile,
-  loading
+  loading,
+  buttonName,
 }) => {
   const [files, setFiles] = useState([]);
   const [image, setImage] = useState(null);
@@ -142,6 +144,7 @@ const PhotosPage = ({
         deletePhoto={handleDeletePhoto}
         setMainPhoto={handleSetMainPhoto}
         loading={loading}
+        buttonName={buttonName}
       />
     </Segment>
   );

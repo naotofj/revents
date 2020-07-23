@@ -26,7 +26,7 @@ const mapState = (state, ownProps) => {
   return {
     profile,
     userUid,
-    events: state.events,
+    events: state.events.userEvents,
     eventsLoading: state.async.loading,
     auth: state.firebase.auth,
     photos: state.firestore.ordered.photos,

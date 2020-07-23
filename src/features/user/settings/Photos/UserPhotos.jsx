@@ -7,6 +7,7 @@ const UserPhotos = ({
   deletePhoto,
   setMainPhoto,
   loading,
+  buttonName,
 }) => {
   let filteredPhotos;
   if (photos) {
@@ -28,8 +29,8 @@ const UserPhotos = ({
             <Card key={photo.id}>
               <Image src={photo.url} />
               <div className='ui two buttons'>
-                <Button
-                  loading={loading}
+              <Button
+                  loading={loading && ('main'+ photo.id) === buttonName}
                   onClick={() => setMainPhoto(photo)}
                   basic
                   color='green'
@@ -37,6 +38,7 @@ const UserPhotos = ({
                   Main
                 </Button>
                 <Button
+                  loading={loading && ('delete' + photo.id) === buttonName}
                   onClick={() => deletePhoto(photo)}
                   basic
                   icon='trash'

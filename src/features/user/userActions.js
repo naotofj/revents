@@ -4,8 +4,9 @@ import {
   asyncActionFinish,
   asyncActionError,
 } from '../async/asyncActions';
-import { FETCH_EVENTS } from '../event/eventConstants';
+import { FETCH_USER_EVENTS } from '../event/eventConstants';
 import cuid from 'cuid';
+import { ASYNC_ACTION_START } from '../async/asyncConstants';
 
 export const updateProfile = (user) => async (
   dispatch,
@@ -80,14 +81,17 @@ export const deletePhoto = (photo) => async (
   const firestore = getFirestore();
   const user = firebase.auth().currentUser;
   try {
+    dispatch({ type: ASYNC_ACTION_START, payload: 'delete' + photo.id });
     await firebase.deleteFile(`${user.uid}/user_images/${photo.name}`);
     await firestore.delete({
       collection: 'users',
       doc: user.uid,
       subcollections: [{ collection: 'photos', doc: photo.id }],
     });
+    dispatch(asyncActionFinish());
   } catch (error) {
     console.log(error);
+    dispatch(asyncActionError());
     throw new Error('Problem deleting the photo');
   }
 };
@@ -104,7 +108,7 @@ export const setMainPhoto = (photo) => async (
   let userDocRef = firestore.collection('users').doc(user.uid);
   let eventAttendeeRef = firestore.collection('event_attendee');
   try {
-    dispatch(asyncActionStart());
+    dispatch({ type: ASYNC_ACTION_START, payload: 'main' + photo.id });
     let batch = firestore.batch();
 
     batch.update(userDocRef, {
@@ -254,7 +258,8 @@ export const getUserEvents = (userUid, activeTab) => async (
       events.push({ ...evt.data(), id: evt.id });
     }
 
-    dispatch({ type: FETCH_EVENTS, payload: { events } });
+    dispatch({ type: FETCH_USER_EVENTS, payload: { events } });
+
     dispatch(asyncActionFinish());
   } catch (error) {
     console.log(error);
