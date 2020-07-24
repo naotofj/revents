@@ -1,10 +1,9 @@
 import React from 'react'
+import UnderConstruction from '../../../app/layout/UnderConstruction'
 
 const PeopleDashboard = () => {
    return (
-      <div>
-         <h1>People Dashboard</h1>
-      </div>
+      <UnderConstruction />
    )
 }
 
