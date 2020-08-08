@@ -1,26 +1,40 @@
-import { createReducer } from "../../app/common/util/reducerUtils"
-import { LOGIN_USER, SIGN_OUT_USER } from "./authConstants"
+import { SIGN_IN_USER, SIGN_OUT_USER } from './authConstants';
+import {LOCATION_CHANGE} from 'connected-react-router';
 
 const initialState = {
-    authenticated: false,
-    currentUser: null
-}
+  authenticated: false,
+  currentUser: null,
+  prevLocation: null,
+  currentLocation: null
+};
 
-const loginUser = (state, payload) => {
-    return {
+export default function authReducer(state = initialState, { type, payload }) {
+  switch (type) {
+    case SIGN_IN_USER:
+      return {
+        ...state,
         authenticated: true,
-        currentUser: payload.creds.email
-    }
-}
-
-const signOutUser = () => {
-    return {
+        currentUser: {
+          email: payload.email,
+          photoURL: payload.photoURL,
+          uid: payload.uid,
+          displayName: payload.displayName,
+          providerId: payload.providerData[0].providerId
+        },
+      };
+    case SIGN_OUT_USER:
+      return {
+        ...state,
         authenticated: false,
-        currentUser: null
-    }
+        currentUser: null,
+      };
+      case LOCATION_CHANGE:
+        return {
+          ...state,
+          prevLocation: state.currentLocation,
+          currentLocation: payload.location
+        }
+    default:
+      return state;
+  }
 }
-
-export default createReducer(initialState, {
-    [LOGIN_USER]: loginUser,
-    [SIGN_OUT_USER]: signOutUser,
-})
